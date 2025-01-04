@@ -3,51 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ストロボ計算ツール</title>
+    <title>ストロボ発光量計算ツール</title>
+    <style>
+        /* ベーススタイル */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* カード風のコンテナ */
+        .container {
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* タイトルスタイル */
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* ラベルとフォーム */
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: #555;
+            margin: 10px 0 5px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007BFF;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 結果スタイル */
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 500px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>ストロボ設定計算ツール</h1>
-    <label for="iso">ISO感度：</label>
-    <input type="number" id="iso" value="200"><br><br>
+    <div class="container">
+        <h1>ストロボ発光量計算ツール</h1>
+        <form id="flash-calculator">
+            <label for="guide-number">ガイドナンバー (GN):</label>
+            <input type="number" id="guide-number" placeholder="例: 58" required>
 
-    <label for="distance">距離（m）：</label>
-    <input type="number" id="distance" value="2"><br><br>
+            <label for="shutter-speed">シャッタースピード (秒):</label>
+            <input type="number" id="shutter-speed" step="0.01" value="1/60" required>
 
-    <label for="fstop">絞り値（F値）：</label>
-    <input type="number" id="fstop" value="2.8"><br><br>
+            <label for="iso">ISO感度:</label>
+            <input type="number" id="iso" value="200" required>
 
-    <button onclick="calculate()">計算</button>
-    <h2>結果</h2>
-    <p id="result"></p>
+            <label for="distance">距離 (メートル):</label>
+            <input type="number" id="distance" step="0.1" placeholder="例: 2.0" required>
+
+            <button type="button" onclick="calculateFlashPower()">計算する</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
 
     <script>
-        function calculate() {
-            const GN100 = 38; // ISO100時のガイドナンバー
-            const iso = parseFloat(document.getElementById("iso").value);
-            const distance = parseFloat(document.getElementById("distance").value);
-            const fstop = parseFloat(document.getElementById("fstop").value);
+        // シャッタースピードのデフォルト値を秒に変換（1/60秒）
+        document.getElementById('shutter-speed').value = 1 / 60;
 
-            // ISO補正後のGN
-            const GN = GN100 * Math.sqrt(iso / 100);
+        function calculateFlashPower() {
+            const guideNumber = parseFloat(document.getElementById('guide-number').value);
+            const shutterSpeed = parseFloat(document.getElementById('shutter-speed').value);
+            const iso = parseFloat(document.getElementById('iso').value);
+            const distance = parseFloat(document.getElementById('distance').value);
 
-            // 必要なGN
-            const requiredGN = fstop * distance;
+            if (isNaN(guideNumber) || isNaN(shutterSpeed) || isNaN(iso) || isNaN(distance)) {
+                document.getElementById('result').textContent = 'すべての値を入力してください。';
+                return;
+            }
 
-            // 発光量の計算
-            const powerLevels = ["1/1", "1/2", "1/4", "1/8", "1/16", "1/32", "1/64", "1/128"];
-            const powerFactors = [1, 0.707, 0.5, 0.354, 0.25, 0.177, 0.125, 0.089];
+            // ISOを基準値に調整（ISO 100を基準とする）
+            const adjustedGN = guideNumber * Math.sqrt(iso / 100);
 
-            let power = "1/128"; // デフォルトの最低値
-            for (let i = 0; i < powerFactors.length; i++) {
-                if (GN * powerFactors[i] >= requiredGN) {
-                    power = powerLevels[i];
-                    break; // 条件を満たしたらループを終了
+            // 必要な光量を計算
+            const requiredAperture = adjustedGN / distance;
+
+            // 発光量のリスト
+            const flashPowers = [
+                { power: '1/1', aperture: adjustedGN },
+                { power: '1/2', aperture: adjustedGN / Math.sqrt(2) },
+                { power: '1/4', aperture: adjustedGN / 2 },
+                { power: '1/8', aperture: adjustedGN / Math.sqrt(8) },
+                { power: '1/16', aperture: adjustedGN / 4 },
+                { power: '1/32', aperture: adjustedGN / Math.sqrt(32) },
+                { power: '1/64', aperture: adjustedGN / 8 },
+                { power: '1/128', aperture: adjustedGN / Math.sqrt(128) }
+            ];
+
+            // 最適な発光量を選択
+            let closestPower = flashPowers[0];
+            for (let i = 1; i < flashPowers.length; i++) {
+                if (Math.abs(flashPowers[i].aperture - requiredAperture) < Math.abs(closestPower.aperture - requiredAperture)) {
+                    closestPower = flashPowers[i];
                 }
             }
 
-            // 結果を表示
-            document.getElementById("result").innerText =
-                `ISO: ${iso}\n距離: ${distance}m\n絞り値: F${fstop}\n必要なGN: ${requiredGN.toFixed(2)}\n推奨発光量: ${power}`;
+            document.getElementById('result').textContent = `適切な発光量は: ${closestPower.power} です。 (推奨絞り値: F${requiredAperture.toFixed(1)})`;
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストロボ発光量計算ツール</title>
+    <style>
+        /* ベーススタイル */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* カード風のコンテナ */
+        .container {
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* タイトルスタイル */
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* ラベルとフォーム */
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: #555;
+            margin: 10px 0 5px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007BFF;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 結果スタイル */
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 500px) {
+            .container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ストロボ発光量計算ツール</h1>
+        <form id="flash-calculator">
+            <label for="guide-number">ガイドナンバー (GN):</label>
+            <input type="number" id="guide-number" placeholder="例: 58" required>
+
+            <label for="shutter-speed">シャッタースピード (秒):</label>
+            <input type="number" id="shutter-speed" step="0.01" value="1/60" required>
+
+            <label for="iso">ISO感度:</label>
+            <input type="number" id="iso" value="200" required>
+
+            <label for="distance">距離 (メートル):</label>
+            <input type="number" id="distance" step="0.1" placeholder="例: 2.0" required>
+
+            <button type="button" onclick="calculateFlashPower()">計算する</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // シャッタースピードのデフォルト値を秒に変換（1/60秒）
+        document.getElementById('shutter-speed').value = 1 / 60;
+
+        function calculateFlashPower() {
+            const guideNumber = parseFloat(document.getElementById('guide-number').value);
+            const shutterSpeed = parseFloat(document.getElementById('shutter-speed').value);
+            const iso = parseFloat(document.getElementById('iso').value);
+            const distance = parseFloat(document.getElementById('distance').value);
+
+            if (isNaN(guideNumber) || isNaN(shutterSpeed) || isNaN(iso) || isNaN(distance)) {
+                document.getElementById('result').textContent = 'すべての値を入力してください。';
+                return;
+            }
+
+            // ISOを基準値に調整（ISO 100を基準とする）
+            const adjustedGN = guideNumber * Math.sqrt(iso / 100);
+
+            // 必要な光量を計算
+            const requiredAperture = adjustedGN / distance;
+
+            // 発光量のリスト
+            const flashPowers = [
+                { power: '1/1', aperture: adjustedGN },
+                { power: '1/2', aperture: adjustedGN / Math.sqrt(2) },
+                { power: '1/4', aperture: adjustedGN / 2 },
+                { power: '1/8', aperture: adjustedGN / Math.sqrt(8) },
+                { power: '1/16', aperture: adjustedGN / 4 },
+                { power: '1/32', aperture: adjustedGN / Math.sqrt(32) },
+                { power: '1/64', aperture: adjustedGN / 8 },
+                { power: '1/128', aperture: adjustedGN / Math.sqrt(128) }
+            ];
+
+            // 最適な発光量を選択
+            let closestPower = flashPowers[0];
+            for (let i = 1; i < flashPowers.length; i++) {
+                if (Math.abs(flashPowers[i].aperture - requiredAperture) < Math.abs(closestPower.aperture - requiredAperture)) {
+                    closestPower = flashPowers[i];
+                }
+            }
+
+            document.getElementById('result').textContent = `適切な発光量は: ${closestPower.power} です。 (推奨絞り値: F${requiredAperture.toFixed(1)})`;
         }
     </script>
 </body>
