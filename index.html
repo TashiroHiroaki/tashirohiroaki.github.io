@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ストロボ計算ツール</title>
+</head>
+<body>
+    <h1>ストロボ設定計算ツール</h1>
+    <label for="iso">ISO感度：</label>
+    <input type="number" id="iso" value="200"><br><br>
+
+    <label for="distance">距離（m）：</label>
+    <input type="number" id="distance" value="2"><br><br>
+
+    <label for="fstop">絞り値（F値）：</label>
+    <input type="number" id="fstop" value="2.8"><br><br>
+
+    <button onclick="calculate()">計算</button>
+    <h2>結果</h2>
+    <p id="result"></p>
+
+    <script>
+        function calculate() {
+            const GN100 = 38; // ISO100時のガイドナンバー
+            const iso = parseFloat(document.getElementById("iso").value);
+            const distance = parseFloat(document.getElementById("distance").value);
+            const fstop = parseFloat(document.getElementById("fstop").value);
+
+            // ISO補正後のGN
+            const GN = GN100 * Math.sqrt(iso / 100);
+
+            // 必要なGN
+            const requiredGN = fstop * distance;
+
+            // 発光量の計算
+            const powerLevels = ["1/1", "1/2", "1/4", "1/8", "1/16", "1/32", "1/64", "1/128"];
+            const powerFactors = [1, 0.707, 0.5, 0.354, 0.25, 0.177, 0.125, 0.089];
+
+            let power = "1/128"; // デフォルトの最低値
+            for (let i = 0; i < powerFactors.length; i++) {
+                if (GN * powerFactors[i] >= requiredGN) {
+                    power = powerLevels[i];
+                    break;
+                }
+            }
+
+            // 結果を表示
+            document.getElementById("result").innerText =
+                `ISO: ${iso}\n距離: ${distance}m\n絞り値: F${fstop}\n必要なGN: ${requiredGN.toFixed(2)}\n推奨発光量: ${power}`;
+        }
+    </script>
+</body>
+</html>
