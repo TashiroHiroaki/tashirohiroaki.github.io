@@ -41,7 +41,7 @@
             for (let i = 0; i < powerFactors.length; i++) {
                 if (GN * powerFactors[i] >= requiredGN) {
                     power = powerLevels[i];
-                    break;
+                    break; // 条件を満たしたらループを終了
                 }
             }
 
