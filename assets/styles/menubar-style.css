@@ -9,6 +9,8 @@
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  line-height: 60px; /* 高さを揃えるために追加 */
+  margin: 0; /* デフォルトのマージンをリセット */
 }
 
 .menu ul {
@@ -28,6 +30,7 @@
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  line-height: 60px; /* 高さを揃えるために追加 */
 }
 
 .menu ul li a:hover {
