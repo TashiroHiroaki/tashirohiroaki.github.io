@@ -49,21 +49,27 @@
 }
 
 @media screen and (max-width: 600px) {
-  .menu h1, .menu ul {
+
+  .menu h1,
+  .menu ul {
     float: none;
     display: block;
     text-align: center;
   }
+
   .menu ul {
     display: none;
   }
+
   .menu ul li {
     float: none;
     display: block;
   }
+
   .menu ul li a {
     line-height: 1.5rem;
   }
+
   .menu .menu-toggle {
     display: block;
     float: right;
