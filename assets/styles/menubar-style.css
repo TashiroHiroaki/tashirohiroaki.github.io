@@ -10,6 +10,7 @@
     margin: 1em auto;
     overflow: hidden;
     width: 100%;
+    text-align: center;
   }
   .cp_navi06 ul {
     display: flex;
