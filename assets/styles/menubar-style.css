@@ -1,70 +1,25 @@
-:root {
-  --menu-bg-color: rgb(0, 117, 0);
-  --menu-hover-bg-color: rgb(1, 61, 1);
-  --menu-text-color: white;
-  --menu-padding: 10px 20px;
-  --menu-hover-text-color: rgb(255, 255, 255);
-  --transition-duration: 0.5s;
-}
-
 .menu {
-  background-color: var(--menu-bg-color);
-  transition: background-color var(--transition-duration), color var(--transition-duration);
-  color: var(--menu-text-color);
+  margin: 0px;
+  background-color: #002e00;
+  color: #ffffff;
+  transition: 500ms;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--menu-padding);
 }
 
-.menu a {
+.menu a{
   color: inherit;
   text-decoration: none;
-  margin: 0 10px;
-  transition: background-color var(--transition-duration), color var(--transition-duration);
 }
 
 .menu a:hover {
-  background-color: var(--menu-hover-bg-color);
-  color: var(--menu-hover-text-color);
+  background-color: #006305;
 }
 
-.menu .h1 {
-  text-align: left;
-  font-size: 24px;
-}
-
-.menu .ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.menu ul{
   display: flex;
-  justify-content: flex-end;
-  flex-wrap: wrap; /* 長いメニュー項目が折り返されるのを防ぐ */
 }
 
-.menu .li {
-  margin: 0 10px;
-  display: inline-block;
-}
-
-/* スマホの場合 */
-@media (max-width: 600px) {
-  .menu {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .menu .ul {
-    display: block;
-    width: 100%;
-  }
-  .menu .li {
-    display: block;
-    width: 100%;
-    text-align: left;
-    margin: 5px 0;
-  }
-  .menu a {
-    margin: 5px 0;
-  }
+.menu li{
+  margin: 15px;
+  list-style: none;
 }
