@@ -1,4 +1,4 @@
-/* https://copypet.jp/671/ */
+/*既存のCSSはそのまま*/
 .cp_navi02 ul {
   display: flex;
   flex-flow: row;
@@ -43,5 +43,12 @@
   .cp_navi02 li:last-child {
     border-bottom: none;
     margin-left: 0;
+  }
+  .cp_navi02 ul li:not(:first-child) {
+    width: 50%;
+    box-sizing: border-box;
+  }
+  .cp_navi02 ul li:not(:first-child):nth-child(odd) {
+    border-right: 1px solid #bbbbbb;
   }
 }
