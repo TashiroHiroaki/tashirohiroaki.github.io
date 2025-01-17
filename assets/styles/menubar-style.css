@@ -1,7 +1,7 @@
-/*既存のCSSはそのまま*/
+/* 既存のCSSはそのまま */
 .cp_navi02 ul {
   display: flex;
-  flex-flow: row;
+  flex-flow: row wrap;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -11,7 +11,7 @@
 .cp_navi02 li {
   border-right: 1px solid #bbbbbb;
 }
-/*最後の項目のみ右に寄せる*/
+/* 最後の項目のみ右に寄せる */
 .cp_navi02 li:last-child {
   border-right: none;
   margin-left: auto;
@@ -34,21 +34,16 @@
 /* Media Query for Mobile Devices */
 @media screen and (max-width: 600px) {
   .cp_navi02 ul {
-    flex-flow: column;
+    flex-flow: column wrap;
   }
   .cp_navi02 li {
     border-right: none;
+    width: 50%; /* 2列にする */
+    box-sizing: border-box;
     border-bottom: 1px solid #bbbbbb;
   }
-  .cp_navi02 li:last-child {
-    border-bottom: none;
-    margin-left: 0;
-  }
-  .cp_navi02 ul li:not(:first-child) {
-    width: 50%;
-    box-sizing: border-box;
-  }
-  .cp_navi02 ul li:not(:first-child):nth-child(odd) {
-    border-right: 1px solid #bbbbbb;
+  .cp_navi02 ul li:nth-child(1) {
+    width: 100%; /* 一番上の項目を1列にする */
+    border-bottom: 1px solid #bbbbbb;
   }
 }
