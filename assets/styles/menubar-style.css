@@ -1,25 +1,31 @@
-.menu {
-  margin: 0px;
-  background-color: #002e00;
+.cp_navi02 ul {
+  display: flex;
+  flex-flow: row;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #1b2538;
+}
+.cp_navi02 li {
+  border-right: 1px solid #bbbbbb;
+}
+/*最後の項目のみ右に寄せる*/
+.cp_navi02 li:last-child {
+  border-right: none;
+  margin-left: auto;
+}
+.cp_navi02 li a {
+  display: block;
   color: #ffffff;
-  transition: 500ms;
-  display: flex;
-}
-
-.menu a{
-  color: inherit;
+  text-align: center;
+  padding: 14px 16px;
   text-decoration: none;
+  transition: all .3s;
 }
-
-.menu a:hover {
-  background-color: #006305;
+.cp_navi02 li a:hover:not(.active) {
+  background-color: #a9bce2;
 }
-
-.menu ul{
-  display: flex;
-}
-
-.menu li{
-  margin: 15px;
-  list-style: none;
+.cp_navi02 .active {
+  background-color: #da3c41;
 }
